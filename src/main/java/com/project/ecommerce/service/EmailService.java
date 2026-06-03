@@ -42,7 +42,7 @@ public class EmailService {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom("crajnish425@gmail.com");
-            message.setTo("rc303604@gmail.com.com");
+            message.setTo("rc303604@gmail.com");
             message.setReplyTo(userEmail);
             message.setSubject("🚨 New Order Received from: " + userName);
 
