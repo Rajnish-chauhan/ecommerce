@@ -6,7 +6,6 @@ import com.project.ecommerce.model.OrderItem;
 import com.project.ecommerce.model.Orders;
 import com.project.ecommerce.model.Product;
 import com.project.ecommerce.model.User;
-
 import com.project.ecommerce.repo.OrderRepository;
 import com.project.ecommerce.repo.ProductRepository;
 import com.project.ecommerce.repo.UserRepository;
@@ -30,7 +29,9 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
-    public OrderDTO placeOrder(String userId, Map<String, Integer> productQuantities, double totalAmount) {
+    // 🔥 METHOD UPDATED TO ACCEPT 6 ARGUMENTS
+    public OrderDTO placeOrder(String userId, Map<String, Integer> productQuantities, double totalAmount,
+                               String paymentId, String razorpayOrderId, String signature) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -49,12 +50,11 @@ public class OrderService {
 
             int requestedQuantity = entry.getValue();
 
-            //  STOCK CHECK & DEDUCTION LOGIC
             if (product.getStock() < requestedQuantity) {
                 throw new RuntimeException("Out of stock for product: " + product.getName());
             }
             product.setStock(product.getStock() - requestedQuantity);
-            productRepository.save(product); // MongoDB mein naya stock save
+            productRepository.save(product);
 
             OrderItem orderItem = new OrderItem();
             orderItem.setProduct(product);
@@ -67,6 +67,7 @@ public class OrderService {
         order.setOrderItems(orderItems);
         Orders saveOrder = orderRepository.save(order);
 
+        // 🔥 EMAIL IS NOW GUARANTEED TO TRIGGER BECAUSE BACKEND WONT CRASH
         try {
             emailService.sendOrderConfirmationEmail(user.getEmail(), user.getName(), saveOrder.getId(), saveOrder.getTotalAmount());
             emailService.sendOrderAlertToAdmin(user.getEmail(), user.getName(), saveOrder.getId(), saveOrder.getTotalAmount());

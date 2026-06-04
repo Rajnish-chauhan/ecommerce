@@ -18,7 +18,15 @@ public class OrderController {
 
     @PostMapping("/place/{userId}")
     public OrderDTO placeOrder(@PathVariable String userId, @RequestBody OrderRequest orderRequest) {
-        return orderService.placeOrder(userId, orderRequest.getProductQuantities(), orderRequest.getTotalAmount());
+        // 🔥 PASS ALL RAZORPAY DATA TO SERVICE
+        return orderService.placeOrder(
+                userId,
+                orderRequest.getProductQuantities(),
+                orderRequest.getTotalAmount(),
+                orderRequest.getRazorpay_payment_id(),
+                orderRequest.getRazorpay_order_id(),
+                orderRequest.getRazorpay_signature()
+        );
     }
 
     @GetMapping("/all-orders")
@@ -27,7 +35,7 @@ public class OrderController {
     }
 
     @GetMapping("/user/{userId}")
-    public List<OrderDTO> getOrderByUser(@PathVariable String userId) { // <-- FIXED HERE
+    public List<OrderDTO> getOrderByUser(@PathVariable String userId) {
         return orderService.getOrderByUser(userId);
     }
 }
