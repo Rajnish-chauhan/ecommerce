@@ -5,8 +5,6 @@ import java.util.Map;
 public class OrderRequest {
     private Map<String, Integer> productQuantities;
     private double totalAmount;
-
-    // 🔥 ADDED RAZORPAY FIELDS
     private String razorpay_payment_id;
     private String razorpay_order_id;
     private String razorpay_signature;

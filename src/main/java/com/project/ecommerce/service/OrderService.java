@@ -29,7 +29,6 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
-    // 🔥 METHOD UPDATED TO ACCEPT 6 ARGUMENTS
     public OrderDTO placeOrder(String userId, Map<String, Integer> productQuantities, double totalAmount,
                                String paymentId, String razorpayOrderId, String signature) {
         User user = userRepository.findById(userId)
@@ -67,12 +66,11 @@ public class OrderService {
         order.setOrderItems(orderItems);
         Orders saveOrder = orderRepository.save(order);
 
-        // 🔥 EMAIL IS NOW GUARANTEED TO TRIGGER BECAUSE BACKEND WONT CRASH
         try {
             emailService.sendOrderConfirmationEmail(user.getEmail(), user.getName(), saveOrder.getId(), saveOrder.getTotalAmount());
             emailService.sendOrderAlertToAdmin(user.getEmail(), user.getName(), saveOrder.getId(), saveOrder.getTotalAmount());
         } catch (Exception e) {
-            System.err.println("❌ Email sending failed, but order was saved. Error: " + e.getMessage());
+            System.err.println("❌ Email sending failed. Error: " + e.getMessage());
         }
 
         return new OrderDTO(saveOrder.getId(), saveOrder.getTotalAmount(),

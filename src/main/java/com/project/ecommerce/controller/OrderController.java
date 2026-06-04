@@ -18,7 +18,6 @@ public class OrderController {
 
     @PostMapping("/place/{userId}")
     public OrderDTO placeOrder(@PathVariable String userId, @RequestBody OrderRequest orderRequest) {
-        // 🔥 PASS ALL RAZORPAY DATA TO SERVICE
         return orderService.placeOrder(
                 userId,
                 orderRequest.getProductQuantities(),
