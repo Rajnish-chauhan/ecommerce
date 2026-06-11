@@ -27,7 +27,7 @@ public class OrderController {
                 orderRequest.getRazorpay_signature()
         );
     }
-
+//Get all orders
     @GetMapping("/all-orders")
     public List<OrderDTO> getAllOrders() {
         return orderService.getAllOrders();
