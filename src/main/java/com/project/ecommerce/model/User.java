@@ -23,6 +23,17 @@ public class User {
     @JsonIgnore
     @DBRef(lazy = true)
     private List<Orders> orders;
+    private boolean isVerified = false;
+
+
+    public boolean isVerified() {
+        return isVerified;
+    }
+
+
+    public void setVerified(boolean verified) {
+        this.isVerified = verified;
+    }
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }

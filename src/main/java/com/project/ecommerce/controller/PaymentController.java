@@ -11,13 +11,14 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/payment")
-@CrossOrigin(origins = "https://ecommerce.rajnishsystems.in/", allowCredentials = "true")
+// Soft-coded origin injection
+@CrossOrigin(origins = "${api.external-service.url}", allowCredentials = "true")
 public class PaymentController {
 
-    @Value("${RAZORPAY_ID}")
+    @Value("${RAZORPAY_ID_TEST}")
     private String razorpayId;
 
-    @Value("${RAZORPAY_SECRET}")
+    @Value("${RAZORPAY_SECRET_TEST}")
     private String razorpaySecret;
 
     @PostMapping("/create-order")

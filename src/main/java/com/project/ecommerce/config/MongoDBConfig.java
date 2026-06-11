@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 public class MongoDBConfig extends AbstractMongoClientConfiguration {
 
     // fetch data from db
-    @Value("${spring.data.mongodb.uri}")
+    @Value("${MONGO_LOCAL_TEST}")
     private String mongoUri;
 
     @Override

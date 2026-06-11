@@ -36,6 +36,27 @@ public class EmailService {
             System.out.println("❌ Error sending Order Confirmation Email: " + e.getMessage());
         }
     }
+    public void sendOtpEmail(String toEmail, String otp) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom("crajnish425@gmail.com");
+            message.setTo(toEmail);
+            message.setSubject("Verify Your Account - SastaHai ⚡");
+
+            String emailBody = "Hello,\n\n"
+                    + "Thank you for registration with SastaHai!\n"
+                    + "Your OTP for account verification is: " + otp + "\n\n"
+                    + "Please enter this code on the signup page to create your account. Do not share this OTP with anyone.\n\n"
+                    + "Best Regards,\n"
+                    + "SastaHai Team";
+
+            message.setText(emailBody);
+            mailSender.send(message);
+            System.out.println("✅ Registration OTP Email sent to: " + toEmail);
+        } catch (Exception e) {
+            System.out.println("❌ Error sending Registration OTP Email: " + e.getMessage());
+        }
+    }
 
     // Admin Order Alert Email
     public void sendOrderAlertToAdmin(String userEmail, String userName, String orderId, double totalAmount) {

@@ -6,6 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,14 +17,13 @@ public class EcommerceApplication {
     public static void main(String[] args) {
         SpringApplication.run(EcommerceApplication.class, args);
     }
-
     @Bean
     public CommandLineRunner loadData(ProductRepository productRepository) {
         return args -> {
             System.out.println("Checking and injecting default premium inventory...");
 
             List<Product> defaultProducts = Arrays.asList(
-                    // 💻 ELECTRONICS
+                    // ELECTRONICS
                     createProduct("MacBook Pro M3", "Apple 14-inch Laptop, 512GB SSD", 16990,
                             "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=800&q=80", "Electronics"),
 
@@ -39,7 +39,7 @@ public class EcommerceApplication {
                     createProduct("Logitech MX Master 3S", "Wireless Performance Mouse", 899,
                             "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=800&q=80", "Electronics"),
 
-                    // 👕 CLOTHING
+                    // CLOTHING
                     createProduct("Levi's 511 Slim Jeans", "Men's Premium Denim", 259,
                             "https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=800&q=80", "Cloth"),
 
@@ -55,7 +55,7 @@ public class EcommerceApplication {
                     createProduct("Ray-Ban Aviators", "Classic Gold Frame Sunglasses", 659,
                             "https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=800&q=80", "Cloth"),
 
-                    // 🛒 GROCERIES
+                    // GROCERIES
                     createProduct("Fresh Red Apples", "1kg Farm Fresh, Premium Quality", 25,
                             "https://www.paperandtea.com/cdn/shop/articles/Apfel_7ebe153a-a4ac-473a-9217-658894dfc968.jpg?v=1765535477&width=1500", "Grocery"),
 
@@ -72,7 +72,7 @@ public class EcommerceApplication {
                             "https://images.unsplash.com/photo-1508061253366-f7da158b6d46?auto=format&fit=crop&w=800&q=80", "Grocery")
             );
 
-            // 🔥 SMART INJECTION: Jo product DB mein nahi hai, sirf wahi save hoga
+
             for (Product p : defaultProducts) {
                 if (!productRepository.existsByName(p.getName())) {
                     productRepository.save(p);
