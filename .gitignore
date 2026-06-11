@@ -34,3 +34,6 @@ build/
 .run
 ./src/main/resources/application-test.properties
 ./src/main/resources/application-prod.properties
+
+**/application-test.properties
+**/application-prod.properties
