@@ -22,36 +22,34 @@ public class ProductController {
     @Autowired
     private UserRepository userRepository;
 
-    // SECURED ADMIN ENDPOINT: Product add karne ke liye
+    // SECURED ADMIN ENDPOINT
     @PostMapping("/add")
     public ResponseEntity<?> addProduct(
             @RequestBody Product product,
             @RequestHeader(value = "X-User-Id", required = false) String userId) {
 
-        // Validation: Check agar header khali hai ya missing hai
+
         if (userId == null || userId.trim().isEmpty()) {
             return ResponseEntity.status(401).body(Map.of("message", "Unauthorized: Missing User Identification Header"));
         }
 
-        // Database se fetch karke user ka role check karo
+        // Database fetch role
         User user = userRepository.findById(userId).orElse(null);
         if (user == null || !"ADMIN".equals(user.getRole())) {
             return ResponseEntity.status(403).body(Map.of("message", "Forbidden: Access denied. Only admins can add products."));
         }
 
-        // Agar user ADMIN hai, toh product MongoDB mein save karo
+        // if admin save db
         Product savedProduct = productRepository.save(product);
         return ResponseEntity.ok(savedProduct);
     }
-
-    // 2. PUBLIC ENDPOINT: Saare products fetch karne ke liye (Sabhi use kar sakte hain)
     @GetMapping("/all")
     public ResponseEntity<List<Product>> getAllProducts() {
         List<Product> products = productRepository.findAll();
         return ResponseEntity.ok(products);
     }
 
-    // 3. PUBLIC ENDPOINT: Single product detail ID ke base par nikalne ke liye
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getProductById(@PathVariable String id) {
         return productRepository.findById(id)

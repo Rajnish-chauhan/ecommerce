@@ -16,7 +16,7 @@ public class User {
     private String email;
     private String password;
     private String dob;
-    private String address; // 🔥 NAYA FIELD ADD KIYA HAI
+    private String address;
     private String profileImageUrl;
     private String role = "USER";
 

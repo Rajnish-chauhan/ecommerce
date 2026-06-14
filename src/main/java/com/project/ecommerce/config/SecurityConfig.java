@@ -100,7 +100,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(Arrays.asList(frontendUrl));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 
-        // 🔥 FIX: Yahan par 'X-User-Id' add kar diya hai 🔥
+        // FIX:  'X-User-Id' add
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept", "X-User-Id"));
 
         configuration.setAllowCredentials(true);
