@@ -121,6 +121,7 @@ The backend API will start on http://localhost:8080.
 docker build -t ecommerce-backend .
 docker run -p 8080:8080 ecommerce-backend
 ```
+### Step 2: Frontend Setup
 * Navigate to the Frontend Directory:
 ```text
 cd ../frontend
@@ -140,8 +141,30 @@ VITE_RAZORPAY_KEY_ID=YOUR_RAZORPAY_KEY_ID
 npm run dev
 ```
 The Vite server will typically start on http://localhost:5173.
-### Step 2: Frontend Setup
-### Lets Connect
+### Step 3: DataBase Setup
+**Database Initialization (MongoDB):**
+Ensure MongoDB is running locally (or you have an Atlas cluster).
+*   Connect to your MongoDB instance via Mongo Shell (`mongosh`) or your terminal.
+*   Execute the following commands to create the database and required collections:
+
+    ```text
+    // 1. Create and switch to the ecommerce database
+    use ecommerce
+
+    // 2. Create the necessary collections
+    db.createCollection("users")
+    db.createCollection("products")
+    db.createCollection("orders")
+
+    // 3. Verify the collections were created successfully
+    show collections
+    
+    // Expected output:
+    // orders
+    // products
+    // users
+    ```
+    *   *Note:* While Spring Data MongoDB will automatically generate these collections upon the first data insertion, explicitly creating them ensures the database schema is fully initialized before the application starts.
 
 ## 🤝 Let's Connect
 
