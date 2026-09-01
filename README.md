@@ -1,6 +1,43 @@
 # Full-Stack E-Commerce Platform
 
+![E-Commerce Home Page](images/Frontend.png)
+
 A comprehensive, robust e-commerce application designed with a microservices-ready backend architecture and an intuitive frontend interface. This project demonstrates end-to-end full-stack development capabilities, featuring secure user authentication, product catalog management, seamless order processing, and third-party payment integration.
+
+## Visual Walkthrough
+
+### Secure Authentication & Authorization
+Implements Spring Security with OAuth2 (Google) and custom OTP-based email verification via Gmail SMTP.
+
+**Standard & OAuth2 Login:**
+![Login Page](images/Login.png)
+![Google OAuth2 Login](Login%20Via%20Oauth2.png)
+
+**Account Creation & OTP Verification:**
+![Create Account](images/AccountCreation.png)
+![OTP Verification UI](images/otp.png)
+![OTP Email Delivery](images/OtpViaMail.png)
+
+### 🛒 Cart, Checkout & Order Management
+Integrated with Razorpay for secure, real-time checkout and payment processing. Includes automated email confirmations for successful orders.
+
+**Shopping Cart & Payment Success:**
+![Cart Screen](images/Cart.png)
+![Payment Done](images/PaymentDone.png)
+
+**Order History & Email Confirmation:**
+![Order History](images/OrderDone.png)
+![Order Confirmation Email](images/OrderConfirmationEmail.png)
+
+### ⚙️ Admin Panel & Product Management
+Dedicated role-based access for Admins to manage the product catalog seamlessly.
+
+![Admin View](images/AdminLogin.png)
+![Add Product via Admin](images/AddProductViaAdmin.png)
+* Database
+
+![DB Admin View](images/DB.png)
+---
 
 ##  Key Features
 
@@ -69,6 +106,7 @@ The backend exposes the following primary REST endpoints (configured with `.perm
 
 ## Comprehensive Setup Guide
 Follow these step-by-step instructions to get the project running on your local machine.
+
 ### Prerequisites
 Before you begin, ensure you have the following installed:
 * Java Development Kit (JDK) 21
@@ -80,9 +118,8 @@ Before you begin, ensure you have the following installed:
 ### Step 1: Backend Setup
 * Clone the Repository:
 ```text
-git clone https://github.com/Rajnish-chauhan/ecommerce.git
+git clone [https://github.com/Rajnish-chauhan/ecommerce.git](https://github.com/Rajnish-chauhan/ecommerce.git)
 ```
-* Configure Environment Properties:
   Navigate to src/main/resources/application.properties (or application-test.properties as per your active profile) and update the following values:
 ```text
 spring.application.name=Ecommerce
@@ -165,7 +202,7 @@ Ensure MongoDB is running locally (or you have an Atlas cluster).
     // users
     ```
     *   *Note:* While Spring Data MongoDB will automatically generate these collections upon the first data insertion, explicitly creating them ensures the database schema is fully initialized before the application starts.
-
+---
 ## 🤝 Let's Connect
 
 **Rajnish Chauhan** | Backend Software Engineer
