@@ -15,7 +15,7 @@ Implements Spring Security with OAuth2 (Google) and custom OTP-based email verif
 
 **Account Creation & OTP Verification:**
 ![Create Account](images/AccountCreation.png)
-![OTP Verification UI](images/OTP.png)
+![OTP Verification UI](images/OtpInEmail.png)
 ![OTP Email Delivery](images/OtpViaMail.png)
 
 ### 🛒 Cart, Checkout & Order Management
