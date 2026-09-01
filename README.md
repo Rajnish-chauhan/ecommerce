@@ -11,7 +11,7 @@ Implements Spring Security with OAuth2 (Google) and custom OTP-based email verif
 
 **Standard & OAuth2 Login:**
 ![Login Page](images/Login.png)
-![Google OAuth2 Login](Login%20Via%20Oauth2.png)
+![Google OAuth2 Login](images/LoginViaOauth2.png)
 
 **Account Creation & OTP Verification:**
 ![Create Account](images/AccountCreation.png)
