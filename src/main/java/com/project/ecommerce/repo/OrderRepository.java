@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface OrderRepository extends MongoRepository<Orders, String> {
     List<Orders> findByUser(User user);
+    boolean existsByRazorpayOrderId(String razorpayOrderId);
 }

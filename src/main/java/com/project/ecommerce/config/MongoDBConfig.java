@@ -9,13 +9,13 @@ import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 @Configuration
 public class MongoDBConfig extends AbstractMongoClientConfiguration {
 
-    // fetch data from db
+
     @Value("${MONGO_LOCAL_TEST}")
     private String mongoUri;
 
     @Override
     protected String getDatabaseName() {
-        // gave db name
+
         return "ecommerce";
     }
 

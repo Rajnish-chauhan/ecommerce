@@ -1,9 +1,7 @@
 package com.project.ecommerce.controller;
 
 import com.project.ecommerce.model.Product;
-import com.project.ecommerce.model.User;
-import com.project.ecommerce.repo.ProductRepository;
-import com.project.ecommerce.repo.UserRepository;
+import com.project.ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,45 +15,32 @@ import java.util.Map;
 public class ProductController {
 
     @Autowired
-    private ProductRepository productRepository;
+    private ProductService productService;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    // SECURED ADMIN ENDPOINT
     @PostMapping("/add")
     public ResponseEntity<?> addProduct(
             @RequestBody Product product,
             @RequestHeader(value = "X-User-Id", required = false) String userId) {
-
-
-        if (userId == null || userId.trim().isEmpty()) {
-            return ResponseEntity.status(401).body(Map.of("message", "Unauthorized: Missing User Identification Header"));
+        try {
+            Product savedProduct = productService.addProduct(product, userId);
+            return ResponseEntity.ok(savedProduct);
+        } catch (SecurityException e) {
+            int status = e.getMessage().contains("Unauthorized") ? 401 : 403;
+            return ResponseEntity.status(status).body(Map.of("message", e.getMessage()));
         }
-
-        // Database fetch role
-        User user = userRepository.findById(userId).orElse(null);
-        if (user == null || !"ADMIN".equals(user.getRole())) {
-            return ResponseEntity.status(403).body(Map.of("message", "Forbidden: Access denied. Only admins can add products."));
-        }
-
-        // if admin save db
-        Product savedProduct = productRepository.save(product);
-        return ResponseEntity.ok(savedProduct);
     }
+
     @GetMapping("/all")
     public ResponseEntity<List<Product>> getAllProducts() {
-        List<Product> products = productRepository.findAll();
-        return ResponseEntity.ok(products);
+        return ResponseEntity.ok(productService.getAllProducts());
     }
-
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getProductById(@PathVariable String id) {
-        return productRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(404).body((Product) Map.of("message", "Product not found")));
+        Product product = productService.getProductById(id);
+        if (product != null) {
+            return ResponseEntity.ok(product);
+        }
+        return ResponseEntity.status(404).body(Map.of("message", "Product not found"));
     }
-
-
 }

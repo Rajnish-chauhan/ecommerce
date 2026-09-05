@@ -84,28 +84,27 @@ public class EmailService {
     }
 
     // Registration Email
-    public void sendRegistrationEmail(String toEmail, String userName, String password) {
+    public void sendRegistrationEmail(String to, String name) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom("crajnish425@gmail.com");
-            message.setTo(toEmail);
+            message.setTo(to);
             message.setSubject("Welcome to SastaHai ⚡ - Account Created");
 
-            String emailBody = "Hello " + userName + ",\n\n"
-                    + "Thank you for signing up on SastaHai!\n"
-                    + "Your account has been successfully created.\n\n"
-                    + "Your Login Details:\n"
-                    + "Email: " + toEmail + "\n"
-                    + "Password: " + password + "\n\n"
-                    + "Please keep your password safe. You can update your profile anytime.\n\n"
-                    + "Best Regards,\n"
-                    + "SastaHai Team";
+            // ✅ Updated email body without the password
+            String body = "Hello " + name + ",\n\n" +
+                    "Thank you for signing up on SastaHai!\n" +
+                    "Your account has been successfully created.\n\n" +
+                    "Your Login Details:\n" +
+                    "Email: " + to + "\n\n" +
+                    "Please keep your account safe. You can update your profile anytime.\n\n" +
+                    "Best Regards,\n" +
+                    "SastaHai Team";
 
-            message.setText(emailBody);
+            message.setText(body);
             mailSender.send(message);
-            System.out.println("✅ Registration Email sent successfully to: " + toEmail);
+
         } catch (Exception e) {
-            System.out.println("❌ Error in sending Registration Email: " + e.getMessage());
+            System.err.println("Error sending email: " + e.getMessage());
         }
     }
 }

@@ -4,6 +4,7 @@ import com.project.ecommerce.dto.OrderDTO;
 import com.project.ecommerce.model.OrderRequest;
 import com.project.ecommerce.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,8 +18,8 @@ public class OrderController {
     private OrderService orderService;
 
     @PostMapping("/place/{userId}")
-    public OrderDTO placeOrder(@PathVariable String userId, @RequestBody OrderRequest orderRequest) {
-        return orderService.placeOrder(
+    public ResponseEntity<OrderDTO> placeOrder(@PathVariable String userId, @RequestBody OrderRequest orderRequest) {
+        OrderDTO order = orderService.placeOrder(
                 userId,
                 orderRequest.getProductQuantities(),
                 orderRequest.getTotalAmount(),
@@ -26,15 +27,16 @@ public class OrderController {
                 orderRequest.getRazorpay_order_id(),
                 orderRequest.getRazorpay_signature()
         );
+        return ResponseEntity.ok(order);
     }
-//Get all orders
+
     @GetMapping("/all-orders")
-    public List<OrderDTO> getAllOrders() {
-        return orderService.getAllOrders();
+    public ResponseEntity<List<OrderDTO>> getAllOrders() {
+        return ResponseEntity.ok(orderService.getAllOrders());
     }
 
     @GetMapping("/user/{userId}")
-    public List<OrderDTO> getOrderByUser(@PathVariable String userId) {
-        return orderService.getOrderByUser(userId);
+    public ResponseEntity<List<OrderDTO>> getOrderByUser(@PathVariable String userId) {
+        return ResponseEntity.ok(orderService.getOrderByUser(userId));
     }
 }
