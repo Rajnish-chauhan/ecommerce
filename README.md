@@ -65,7 +65,96 @@ Dedicated role-based access for Admins to manage the product catalog seamlessly.
 *   **Routing & Networking:** React Router (`ProtectedRoute`), Axios
 
 ## 📂 Project Structure
-
+### Backend
+```text
+EcommerceBackend
+├── .idea
+├── .mvn
+├── .run
+├── images
+├── src
+│   ├── main
+│   │   ├── java
+│   │   │   └── com.project.ecommerce
+│   │   │       ├── config
+│   │   │       │   ├── AppConfig
+│   │   │       │   ├── MongoDBConfig
+│   │   │       │   └── SecurityConfig
+│   │   │       ├── controller
+│   │   │       │   ├── OrderController
+│   │   │       │   ├── OtpController
+│   │   │       │   ├── PaymentController
+│   │   │       │   ├── ProductController
+│   │   │       │   └── UserController
+│   │   │       ├── dto
+│   │   │       │   ├── OrderDTO
+│   │   │       │   ├── OrderItemDTO
+│   │   │       │   ├── UserRequestDTO
+│   │   │       │   └── UserResponseDTO
+│   │   │       ├── exception
+│   │   │       │   ├── GlobalExceptionHandler
+│   │   │       │   └── ResourceNotFoundException
+│   │   │       ├── model
+│   │   │       │   ├── OrderItem
+│   │   │       │   ├── OrderRequest
+│   │   │       │   ├── Orders
+│   │   │       │   ├── Product
+│   │   │       │   └── User
+│   │   │       ├── repo
+│   │   │       │   ├── OrderRepository
+│   │   │       │   ├── ProductRepository
+│   │   │       │   └── UserRepository
+│   │   │       ├── service
+│   │   │       │   ├── EmailService
+│   │   │       │   ├── OrderService
+│   │   │       │   ├── OtpService
+│   │   │       │   ├── PaymentService
+│   │   │       │   ├── ProductService
+│   │   │       │   └── UserService
+│   │   │       └── EcommerceApplication
+│   │   └── resources
+│   │       ├── static
+│   │       ├── templates
+│   │       ├── application.properties
+│   │       ├── application-prod.properties
+│   │       └── application-test.properties
+│   └── test
+├── target
+├── .gitattributes
+├── .gitignore
+└── Dockerfile
+```
+### Frontend
+```text
+ecommerce
+├── public
+│   ├── policies.html
+│   ├── privacy.html
+│   └── vite.svg
+└── src
+    ├── api
+    │   └── axiosClient.jsx
+    ├── components
+    │   ├── Footer.jsx
+    │   ├── Navbar.jsx
+    │   ├── ProductCard.jsx
+    │   └── ProtectedRoute.jsx
+    ├── context
+    │   ├── AuthContext.jsx
+    │   ├── CartContext.jsx
+    │   └── SearchContext.jsx
+    ├── pages
+    │   ├── AdminAddProduct.jsx
+    │   ├── Cart.jsx
+    │   ├── Home.jsx
+    │   ├── Login.jsx
+    │   ├── MyOrders.jsx
+    │   └── Profile.jsx
+    ├── App.css
+    ├── App.jsx
+    ├── jsconfig.jsx
+    └── main.jsx
+```
 ### Backend Core Modules
 *   `config/`: Security filter chains, OAuth2 configs, and MongoDB connection setups.
 *   `controller/`: REST API endpoints handling client requests.
