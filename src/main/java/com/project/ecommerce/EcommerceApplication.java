@@ -80,7 +80,7 @@ public class EcommerceApplication {
                 }
             }
 
-            System.out.println("✅ Backend product initialization check complete!");
+            System.out.println("Backend product initialization check complete!");
         };
     }
 

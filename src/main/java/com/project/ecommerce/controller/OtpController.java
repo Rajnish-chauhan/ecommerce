@@ -16,25 +16,26 @@ public class OtpController {
     private OtpService otpService;
 
     @PostMapping("/send")
-    public ResponseEntity<?> sendOtp(@RequestBody Map<String, String> request) {
+    public ResponseEntity<Map<String, String>> sendOtp(@RequestBody Map<String, String> request) {
         String email = request.get("email");
-        if (email == null) return ResponseEntity.badRequest().body("Email is required");
-
-        otpService.generateAndSendOtp(email);
-        return ResponseEntity.ok(Map.of("message", "OTP sent successfully"));
+        if (email == null || email.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Email address is required."));
+        }
+        otpService.generateAndSendOtp(email.trim().toLowerCase());
+        return ResponseEntity.ok(Map.of("message", "Verification OTP sent successfully."));
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<?> verifyOtp(@RequestBody Map<String, String> request) {
+    public ResponseEntity<Map<String, Object>> verifyOtp(@RequestBody Map<String, String> request) {
         String email = request.get("email");
         String otp = request.get("otp");
-
-        boolean isValid = otpService.verifyOtp(email, otp);
-
-        if (isValid) {
-            return ResponseEntity.ok(Map.of("success", true, "message", "OTP verified successfully"));
-        } else {
-            return ResponseEntity.status(400).body(Map.of("success", false, "message", "Invalid or expired OTP"));
+        if (email == null || otp == null) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Email and OTP are required."));
         }
+        boolean verified = otpService.verifyOtp(email.trim().toLowerCase(), otp.trim());
+        if (!verified) {
+            return ResponseEntity.status(400).body(Map.of("message", "Invalid or expired OTP."));
+        }
+        return ResponseEntity.ok(Map.of("message", "Email verified successfully.", "verified", true));
     }
 }

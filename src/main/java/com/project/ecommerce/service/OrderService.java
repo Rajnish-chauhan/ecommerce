@@ -34,18 +34,16 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
-    @Value("${RAZORPAY_SECRET_TEST}")
+    @Value("${razorpay.key.secret}")
     private String razorpaySecret;
 
     public OrderDTO placeOrder(String userId, Map<String, Integer> productQuantities, double totalAmount,
                                String paymentId, String razorpayOrderId, String signature) {
 
-        // 1. IDEMPOTENCY CHECK: Prevent double-saving the same order
         if (orderRepository.existsByRazorpayOrderId(razorpayOrderId)) {
-            throw new IllegalArgumentException("Order has already been processed for this payment.");
+            throw new IllegalArgumentException("Order has already been processed for this transaction.");
         }
 
-        // 2. SECURITY CHECK: Verify Razorpay Signature
         try {
             JSONObject options = new JSONObject();
             options.put("razorpay_order_id", razorpayOrderId);
@@ -54,10 +52,10 @@ public class OrderService {
 
             boolean isValid = Utils.verifyPaymentSignature(options, razorpaySecret);
             if (!isValid) {
-                throw new SecurityException("Payment signature verification failed! Possible fraudulent attempt.");
+                throw new SecurityException("Payment signature verification failed.");
             }
         } catch (Exception e) {
-            throw new SecurityException("Error validating payment signature.", e);
+            throw new SecurityException("Payment validation failed.", e);
         }
 
         User user = userRepository.findById(userId)
@@ -68,18 +66,18 @@ public class OrderService {
         order.setOrderDate(new Date());
         order.setStatus("Confirmed");
         order.setTotalAmount(totalAmount);
-        order.setRazorpayOrderId(razorpayOrderId); // ✅ Save the Razorpay ID
+        order.setRazorpayOrderId(razorpayOrderId);
 
         List<OrderItem> orderItems = new ArrayList<>();
         List<OrderItemDTO> orderItemDTOS = new ArrayList<>();
 
         for (Map.Entry<String, Integer> entry : productQuantities.entrySet()) {
             Product product = productRepository.findById(entry.getKey())
-                    .orElseThrow(() -> new ResourceNotFoundException("Product Not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Product not found: " + entry.getKey()));
 
             int requestedQuantity = entry.getValue();
             if (product.getStock() < requestedQuantity) {
-                throw new IllegalArgumentException("Out of stock for product: " + product.getName());
+                throw new IllegalArgumentException("Insufficient stock for product: " + product.getName());
             }
 
             product.setStock(product.getStock() - requestedQuantity);
@@ -94,17 +92,18 @@ public class OrderService {
         }
 
         order.setOrderItems(orderItems);
-        Orders saveOrder = orderRepository.save(order);
+        Orders savedOrder = orderRepository.save(order);
 
         try {
-            emailService.sendOrderConfirmationEmail(user.getEmail(), user.getName(), saveOrder.getId(), saveOrder.getTotalAmount());
-            emailService.sendOrderAlertToAdmin(user.getEmail(), user.getName(), saveOrder.getId(), saveOrder.getTotalAmount());
+            emailService.sendOrderConfirmationEmail(user.getEmail(), user.getName(), savedOrder.getId(), savedOrder.getTotalAmount());
+            emailService.sendOrderAlertToAdmin(user.getEmail(), user.getName(), savedOrder.getId(), savedOrder.getTotalAmount());
         } catch (Exception e) {
-            System.err.println("❌ Email sending failed. Error: " + e.getMessage());
+            System.err.println("Email notification failed: " + e.getMessage());
         }
 
-        return new OrderDTO(saveOrder.getId(), saveOrder.getTotalAmount(),
-                saveOrder.getStatus(), saveOrder.getOrderDate(), orderItemDTOS);
+        return new OrderDTO(savedOrder.getId(), savedOrder.getTotalAmount(),
+                savedOrder.getStatus(), savedOrder.getOrderDate(),
+                user.getName(), user.getEmail(), orderItemDTOS);
     }
 
     public List<OrderDTO> getAllOrders() {
@@ -117,11 +116,11 @@ public class OrderService {
     }
 
     private OrderDTO convertToDTO(Orders orders) {
-        List<OrderItemDTO> OrderItems = orders.getOrderItems().stream()
+        List<OrderItemDTO> orderItems = orders.getOrderItems().stream()
                 .map(item -> new OrderItemDTO(item.getProduct().getName(), item.getProduct().getPrice(), item.getQuantity()))
                 .collect(Collectors.toList());
         return new OrderDTO(orders.getId(), orders.getTotalAmount(), orders.getStatus(), orders.getOrderDate(),
                 orders.getUser() != null ? orders.getUser().getName() : "Unknown",
-                orders.getUser() != null ? orders.getUser().getEmail() : "Unknown", OrderItems);
+                orders.getUser() != null ? orders.getUser().getEmail() : "Unknown", orderItems);
     }
 }

@@ -28,7 +28,6 @@ public class Orders {
     public void setRazorpayOrderId(String razorpayOrderId) {
         this.razorpayOrderId = razorpayOrderId;
     }
-    // In MongoDB, items are embedded directly, so no @OneToMany needed
     private List<OrderItem> orderItems;
 
     public String getId() { return id; }

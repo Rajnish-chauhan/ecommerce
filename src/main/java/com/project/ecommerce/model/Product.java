@@ -15,7 +15,6 @@ public class Product {
     private String category;
     private String imageUrl;
 
-    // Default Constructor
     public Product() {}
 
 

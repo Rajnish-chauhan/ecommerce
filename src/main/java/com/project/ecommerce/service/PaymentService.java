@@ -10,12 +10,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class PaymentService {
 
-    @Value("${RAZORPAY_ID_TEST}")
+    @Value("${razorpay.key.id}")
     private String razorpayId;
 
-    @Value("${RAZORPAY_SECRET_TEST}")
+    @Value("${razorpay.key.secret}")
     private String razorpaySecret;
-
     public String createRazorpayOrder(int amountInRupees) throws RazorpayException {
         RazorpayClient client = new RazorpayClient(razorpayId, razorpaySecret);
 

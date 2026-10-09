@@ -1,8 +1,6 @@
 package com.project.ecommerce.model;
 
 public class OrderItem {
-
-    // Removed ID and Order reference to avoid infinite loops in MongoDB
     private Product product;
     private int quantity;
 
