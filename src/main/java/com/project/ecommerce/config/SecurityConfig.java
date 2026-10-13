@@ -24,7 +24,7 @@ public class SecurityConfig {
 
     @Value("${api.external-service.url:https://sastahai.rajnishsystems.in}")
     private String frontendUrl;
-
+// config
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
