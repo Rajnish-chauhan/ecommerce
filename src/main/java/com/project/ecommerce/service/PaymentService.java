@@ -10,11 +10,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class PaymentService {
 
-    @Value("${razorpay.key.id}")
+    // Resolves Razorpay Key ID across profiles with chained fallbacks to prevent startup crash
+    @Value("${razorpay.key.id:${RAZORPAY_KEY_ID:${RAZORPAY_ID_PROD:${RAZORPAY_ID_TEST:rzp_test_dummy}}}}")
     private String razorpayId;
 
-    @Value("${razorpay.key.secret}")
+    // Resolves Razorpay Secret across profiles with chained fallbacks to prevent startup crash
+    @Value("${razorpay.key.secret:${RAZORPAY_KEY_SECRET:${RAZORPAY_SECRET_PROD:${RAZORPAY_SECRET_TEST:dummy_secret}}}}")
     private String razorpaySecret;
+
     public String createRazorpayOrder(int amountInRupees) throws RazorpayException {
         RazorpayClient client = new RazorpayClient(razorpayId, razorpaySecret);
 
