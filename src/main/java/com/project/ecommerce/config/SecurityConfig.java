@@ -14,7 +14,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -23,8 +22,7 @@ public class SecurityConfig {
     @Autowired
     private UserService userService;
 
-    // Allowed frontend origins with local default fallback
-    @Value("${api.external-service.url:http://localhost:5173}")
+    @Value("${api.external-service.url:https://sastahai.rajnishsystems.in}")
     private String frontendUrl;
 
     @Bean
@@ -46,7 +44,7 @@ public class SecurityConfig {
                             // Synchronize authenticated user with database
                             userService.processOAuthPostLogin(email, name, picture);
 
-                            // Redirect to primary configured frontend origin
+                            // Redirect to configured frontend origin
                             String targetUrl = frontendUrl.contains(",") ? frontendUrl.split(",")[0].trim() : frontendUrl.trim();
                             response.sendRedirect(targetUrl + "/?email=" + email);
                         })
@@ -59,15 +57,18 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Support multiple comma-separated origins
-        List<String> origins = Arrays.stream(frontendUrl.split(","))
-                .map(String::trim)
-                .filter(origin -> !origin.isEmpty())
-                .toList();
+        // Allow both local development and live production domains with credentials
+        configuration.setAllowedOriginPatterns(Arrays.asList(
+                "http://localhost:*",
+                "http://127.0.0.1:*",
+                "https://*.rajnishsystems.in",
+                "https://sastahai.rajnishsystems.in",
+                "https://*.vercel.app"
+        ));
 
-        configuration.setAllowedOrigins(origins);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept", "X-User-Id"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept", "X-User-Id", "X-Requested-With"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
