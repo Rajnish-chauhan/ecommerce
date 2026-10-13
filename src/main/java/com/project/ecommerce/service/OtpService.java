@@ -14,9 +14,9 @@ public class OtpService {
     private EmailService emailService;
 
     // 10 minutes OTP validity duration in milliseconds
-    private static final long OTP_VALIDITY_DURATION_MS = 10 * 60 * 1000;
+    private static final long OTP_VALIDITY_DURATION_MS = 10 * 60 * 1000L;
 
-    // Inner class holding OTP code and expiration timestamp
+    // Holds OTP code and its expiration timestamp
     private static class OtpEntry {
         private final String otpCode;
         private final long expiryTime;
@@ -35,7 +35,7 @@ public class OtpService {
         }
     }
 
-    // Thread-safe in-memory cache for OTP records
+    // In-memory cache for OTP records
     private final Map<String, OtpEntry> otpStorage = new ConcurrentHashMap<>();
 
     public void generateAndSendOtp(String rawEmail) {
@@ -45,7 +45,7 @@ public class OtpService {
 
         String normalizedEmail = rawEmail.trim().toLowerCase();
 
-        // Generate a 6-digit numeric OTP
+        // Generate 6-digit numeric OTP code
         String otp = String.format("%06d", new Random().nextInt(999999));
         long expiry = System.currentTimeMillis() + OTP_VALIDITY_DURATION_MS;
 

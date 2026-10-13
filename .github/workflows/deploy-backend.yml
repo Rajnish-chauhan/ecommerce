@@ -1,0 +1,60 @@
+name: Deploy Backend to AWS EC2
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ecommerce-backend:latest
+
+      - name: Deploy container to EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            echo "Stopping old container if running..."
+            docker stop ecommerce-backend || true
+            docker rm ecommerce-backend || true
+
+            echo "Pulling latest backend image..."
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/ecommerce-backend:latest
+
+            echo "Starting container on host port 8081..."
+            docker run -d \
+              --name ecommerce-backend \
+              --restart unless-stopped \
+              -p 8081:8080 \
+              -e SPRING_PROFILES_ACTIVE=prod \
+              -e MONGO_ATLAS_PROD="${{ secrets.MONGO_ATLAS_PROD }}" \
+              -e EMAIL_USER_PROD="${{ secrets.EMAIL_USER_PROD }}" \
+              -e EMAIL_APP_PASS_PROD="${{ secrets.EMAIL_APP_PASS_PROD }}" \
+              -e GOOGLE_CLIENT_ID_PROD="${{ secrets.GOOGLE_CLIENT_ID_PROD }}" \
+              -e GOOGLE_CLIENT_SECRET_PROD="${{ secrets.GOOGLE_CLIENT_SECRET_PROD }}" \
+              -e RAZORPAY_ID_PROD="${{ secrets.RAZORPAY_ID_PROD }}" \
+              -e RAZORPAY_SECRET_PROD="${{ secrets.RAZORPAY_SECRET_PROD }}" \
+              -e FRONTEND_URL_PROD="https://sastahai.rajnishsystems.in" \
+              ${{ secrets.DOCKERHUB_USERNAME }}/ecommerce-backend:latest
+
+            echo "Cleaning up unused Docker images..."
+            docker image prune -f

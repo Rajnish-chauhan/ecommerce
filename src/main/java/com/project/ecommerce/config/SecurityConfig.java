@@ -14,6 +14,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -22,6 +23,7 @@ public class SecurityConfig {
     @Autowired
     private UserService userService;
 
+    // Configured frontend URL or comma-separated list of origins
     @Value("${api.external-service.url}")
     private String frontendUrl;
 
@@ -41,10 +43,12 @@ public class SecurityConfig {
                             String name = oauthUser.getAttribute("name");
                             String picture = oauthUser.getAttribute("picture");
 
-                            // Delegate business logic to the Service Layer
+                            // Synchronize authenticated user with database
                             userService.processOAuthPostLogin(email, name, picture);
 
-                            response.sendRedirect(frontendUrl + "/?email=" + email);
+                            // Redirect to primary configured frontend origin
+                            String targetUrl = frontendUrl.contains(",") ? frontendUrl.split(",")[0].trim() : frontendUrl.trim();
+                            response.sendRedirect(targetUrl + "/?email=" + email);
                         })
                 );
 
@@ -54,8 +58,15 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(frontendUrl));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+
+        // Support multiple origins split by comma
+        List<String> origins = Arrays.stream(frontendUrl.split(","))
+                .map(String::trim)
+                .filter(origin -> !origin.isEmpty())
+                .toList();
+
+        configuration.setAllowedOrigins(origins);
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept", "X-User-Id"));
         configuration.setAllowCredentials(true);
 

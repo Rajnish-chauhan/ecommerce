@@ -9,7 +9,8 @@ import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 @Configuration
 public class MongoDBConfig extends AbstractMongoClientConfiguration {
 
-    @Value("${MONGO_LOCAL_TEST}")
+    // Read dynamic MongoDB URI based on active profile (test or prod)
+    @Value("${spring.data.mongodb.uri}")
     private String mongoUri;
 
     @Override
