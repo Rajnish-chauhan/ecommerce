@@ -40,7 +40,7 @@ jobs:
             echo "Pulling latest backend image..."
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/ecommerce-backend:latest
 
-            echo "Starting container on host port 8081..."
+            echo "Starting container on host port 8081 with prod profile..."
             docker run -d \
               --name ecommerce-backend \
               --restart unless-stopped \

@@ -23,8 +23,8 @@ public class SecurityConfig {
     @Autowired
     private UserService userService;
 
-    // Configured frontend URL or comma-separated list of origins
-    @Value("${api.external-service.url}")
+    // Allowed frontend origins with local default fallback
+    @Value("${api.external-service.url:http://localhost:5173}")
     private String frontendUrl;
 
     @Bean
@@ -59,7 +59,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Support multiple origins split by comma
+        // Support multiple comma-separated origins
         List<String> origins = Arrays.stream(frontendUrl.split(","))
                 .map(String::trim)
                 .filter(origin -> !origin.isEmpty())

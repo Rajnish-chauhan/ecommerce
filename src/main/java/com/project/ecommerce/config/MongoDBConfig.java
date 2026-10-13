@@ -9,8 +9,8 @@ import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 @Configuration
 public class MongoDBConfig extends AbstractMongoClientConfiguration {
 
-    // Read dynamic MongoDB URI based on active profile (test or prod)
-    @Value("${spring.data.mongodb.uri}")
+    // Resolves configured URI with chained fallbacks to avoid startup resolution errors
+    @Value("${spring.data.mongodb.uri:${MONGO_ATLAS_PROD:${MONGO_LOCAL_TEST:mongodb://localhost:27017/ecommerce}}}")
     private String mongoUri;
 
     @Override
