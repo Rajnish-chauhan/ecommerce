@@ -9,16 +9,22 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailService {
 
-    @Autowired
+    // Set required=false so application boots even if mail properties are missing locally
+    @Autowired(required = false)
     private JavaMailSender mailSender;
 
-    @Value("${spring.mail.username}")
+    @Value("${spring.mail.username:}")
     private String senderEmail;
 
     @Value("${admin.alert.email:rc303604@gmail.com}")
     private String adminEmail;
 
     public void sendOrderConfirmationEmail(String toEmail, String userName, String orderId, double totalAmount) {
+        if (mailSender == null || senderEmail == null || senderEmail.isEmpty()) {
+            System.out.println("MailSender not configured. Skipping order confirmation email to: " + toEmail);
+            return;
+        }
+
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(senderEmail);
@@ -43,10 +49,15 @@ public class EmailService {
     }
 
     public void sendOtpEmail(String toEmail, String otp) {
+        if (mailSender == null || senderEmail == null || senderEmail.isEmpty()) {
+            System.out.println("MailSender not configured. Simulated OTP for " + toEmail + " is: " + otp);
+            return;
+        }
+
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(senderEmail);
-            message.setTo(toEmail); // Fixed: sending to actual recipient
+            message.setTo(toEmail);
             message.setSubject("Account Verification OTP - SastaHai");
 
             String emailBody = "Hello,\n\n"
@@ -64,6 +75,11 @@ public class EmailService {
     }
 
     public void sendOrderAlertToAdmin(String userEmail, String userName, String orderId, double totalAmount) {
+        if (mailSender == null || senderEmail == null || senderEmail.isEmpty()) {
+            System.out.println("MailSender not configured. Skipping admin alert email.");
+            return;
+        }
+
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(senderEmail);
@@ -87,6 +103,11 @@ public class EmailService {
     }
 
     public void sendRegistrationEmail(String to, String name) {
+        if (mailSender == null || senderEmail == null || senderEmail.isEmpty()) {
+            System.out.println("MailSender not configured. Skipping welcome email to: " + to);
+            return;
+        }
+
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(senderEmail);
